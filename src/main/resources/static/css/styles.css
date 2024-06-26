@@ -11,5 +11,14 @@
 
 .stock-search {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+}
+
+.large-container {
+    display: flex;
+    height: 400px;
+    width: 800px;
+
+    border: 1px solid blue;
+
 }
