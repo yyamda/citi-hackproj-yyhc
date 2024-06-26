@@ -1,3 +1,15 @@
-body {
-    color: blue;
+.title-page {
+    color: gray;
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.stock-input {
+    height: 30px;
+    width: 200px;
+}
+
+.stock-search {
+    display: flex;
+    flex-direction: row;
 }
