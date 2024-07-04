@@ -5,13 +5,20 @@
 }
 
 .stock-input {
-    height: 30px;
-    width: 200px;
+    height: 200px;
+    width: 150px;
 }
 
 .stock-search {
     display: flex;
     flex-direction: column;
+    height: 200px;
+    background-color: white;
+}
+
+.search-button {
+    display: flex;
+    width: 150px;
 }
 
 .large-container {

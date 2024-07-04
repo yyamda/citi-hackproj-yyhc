@@ -6,21 +6,17 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Stock Viewer</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css?v=<?= time(); ?>" >
 </head>
 <body>
     <div>
-        <h1 class="title-page">
-            Stock Price Viewer
-        </h1>
-        <h2>
-            Search a stock below!
-        </h2>
+        <h1 class="title-page"> Stock Price Viewer </h1>
+        <h2> Search a stock below! </h2>
         <div class="stock-search">
-            <input type="text" id="stock-value" class="stock-input" placeholder="Insert Stock Name" />
-            <input type="text" id="start-date" class="stock-input" placeholder="Insert Start Date (yyyy-mm-dd)" />
-            <input type="text" id="end-date" class="stock-input" placeholder="Insert End Date (yyyy-mm-dd)" />
-            <button id="searchButton"> Search! </button>
+            <input type="text" class="stock-input stock-value" placeholder="Insert Stock Name" />
+            <input type="text"  class="stock-input start-date" placeholder="Insert Start Date (yyyy-mm-dd)" />
+            <input type="text"  class="stock-input end-date"  placeholder="Insert End Date (yyyy-mm-dd)" />
+            <button class="search-button"> Search! Hello </button>
         </div>
 
     </div>
