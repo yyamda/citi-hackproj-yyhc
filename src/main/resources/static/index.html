@@ -11,20 +11,28 @@
 <body>
     <div>
         <h1 class="title-page"> Stock Price Viewer </h1>
-        <h2> Search a stock below! </h2>
-        <div class="stock-search">
-            <input type="text" class="stock-input stock-value" placeholder="Insert Stock Name" />
-            <input type="text"  class="stock-input start-date" placeholder="Insert Start Date (yyyy-mm-dd)" />
-            <input type="text"  class="stock-input end-date"  placeholder="Insert End Date (yyyy-mm-dd)" />
-            <button class="search-button"> Search! Hello </button>
-        </div>
 
-        <h1>Chart Example</h1>
-        <div class="chart-container">
-            <img class="chart-image" src="" alt="Chart will be displayed here">
+        <div class="stock-page">
+            <div class="stock-search">
+                <h2> Search a stock below! </h2>
+                <input type="text" class="stock-input company-name" placeholder="Insert Company Name" />
+                <input type="text" class="stock-input stock-value" placeholder="Insert Stock Name" />
+                <input type="text"  class="stock-input start-date" placeholder="Insert Start Date (yyyy-mm-dd)" />
+                <input type="text"  class="stock-input end-date"  placeholder="Insert End Date (yyyy-mm-dd)" />
+                <button class="search-button"> Search! </button>
+
+            </div>
+
+            <div class="chart-container">
+                <h1>Chart Example</h1>
+                <div class="image-container">
+                    <img class="company-image" src="" alt="company logo to be displayed here">
+                    <img class="chart-image" src="" alt="Chart will be displayed here">
+                </div>
+
+            </div>
         </div>
     </div>
-
 
     <script src="/js/scripts.js"></script>
 </body>
