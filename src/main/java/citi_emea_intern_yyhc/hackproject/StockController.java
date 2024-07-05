@@ -57,8 +57,6 @@ public class StockController {
 
 }
 
-
-
 class StockData {
     @JsonProperty("request_id")
     public String requestId;
