@@ -3,6 +3,8 @@ let polygonStockApiUrl = ["https://api.polygon.io/v2/aggs/ticker/", "/range/1/da
 document.addEventListener("DOMContentLoaded", function() {
 
     const searchButton = document.querySelector(".search-button");
+    const chartImage = document.querySelector(".chart-image");
+
     searchButton.addEventListener("click", prepareData);
 
     async function prepareData() {
@@ -20,11 +22,22 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(apiResponse); // this is JSON format.
 
             let processResponse = await sendToServer(apiResponse, startDate, endDate);
+
             console.log("Server processing completed", processResponse);
+            console.log("Now calling getImage");
+
+            let chartImageUrl = await getImageUrl();
+
+            console.log(chartImageUrl);
+
+            if (chartImageUrl) {
+                console.log("trying to change source")
+                chartImage.src = chartImageUrl;
+            }
+            console.log("Function is done");
         } catch (error) {
             console.error("Error fetching or sending data");
         }
-
         }
 
     async function fetchData(stock_name, start_date, end_date) {
@@ -40,13 +53,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function sendToServer(data, startDate, endDate) {
-
         const requestBody = {
               ...data,
               startDate: startDate,
               endDate: endDate
         };
-
         const response = await fetch('/processStockData', {
             method: 'POST',
             headers: {
@@ -59,5 +70,19 @@ document.addEventListener("DOMContentLoaded", function() {
             throw new Error('Network response was not ok');
         }
         return await response.text();
-    }
-})
+    };
+
+    async function getImageUrl() {
+
+        try {
+            const response = await fetch('/chart');
+            const blob = await response.blob();
+            const imageUrl = URL.createObjectURL(blob);
+            console.log("image below")
+            console.log(imageUrl);
+            return imageUrl;
+        } catch (error) {
+            console.error("Error fetching the chart", error)
+        }
+    };
+});
