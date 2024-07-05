@@ -1,13 +1,15 @@
 let polygonStockApiUrl = ["https://api.polygon.io/v2/aggs/ticker/", "/range/1/day/", "/", "?apiKey=5Jgi3YlL3jI6A3LAENnC1qqs7ebQz4HU"]
-
+let alphaVantageApiUrl = ["https://www.alphavantage.co/query?function=OVERVIEW&symbol=","&apikey=12JWP14CSW66DSLG"]
 document.addEventListener("DOMContentLoaded", function() {
 
     const searchButton = document.querySelector(".search-button");
     const chartImage = document.querySelector(".chart-image");
+    const companyImage = document.querySelector(".company-image");
 
     searchButton.addEventListener("click", prepareData);
 
     async function prepareData() {
+        var companyName = document.querySelector(".company-name").value;
         var stockName = document.querySelector(".stock-value").value;
         var startDate = document.querySelector(".start-date").value;
         var endDate = document.querySelector(".end-date").value;
@@ -21,14 +23,18 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("API CALL completed");
             console.log(apiResponse); // this is JSON format.
 
+//          Send stockData over to backend java
             let processResponse = await sendToServer(apiResponse, startDate, endDate);
 
             console.log("Server processing completed", processResponse);
             console.log("Now calling getImage");
 
+//          Get image url from backend java
             let chartImageUrl = await getImageUrl();
 
-            console.log(chartImageUrl);
+//          Get company logo from ticker: AAPL --> apple.com --> logo
+//            let companyDomain = await getDomainFromTicker(stockName);
+            companyImage.src = "https://logo.clearbit.com/" + companyName + ".com";
 
             if (chartImageUrl) {
                 console.log("trying to change source")
@@ -84,5 +90,26 @@ document.addEventListener("DOMContentLoaded", function() {
         } catch (error) {
             console.error("Error fetching the chart", error)
         }
+    };
+
+    async function getDomainFromTicker(stock_name) {
+        let stockApiUrl = alphaVantageApiUrl[0] + stock_name + alphaVantageApiUrl[1];
+        const response = await fetch(stockApiUrl);
+
+        console.log(stockApiUrl);
+        if (response.ok) {
+            console.log("domain api call successful")
+            const data = await response.json();
+            console.log(data);
+            let companyName = data.Name
+            companyName = companyName.split(" ")
+            companyName = companyName[0]
+            companyName = companyName.toLowerCase()
+            console.log(companyName);
+            return companyName;
+        } else {
+            return null;
+        }
+
     };
 });

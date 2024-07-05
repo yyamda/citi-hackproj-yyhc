@@ -20,6 +20,7 @@ import java.lang.reflect.Array;
 @RestController
 public class StockController {
     String PRIVATE_KEY = "5Jgi3YlL3jI6A3LAENnC1qqs7ebQz4HU";
+    String AlphaVantage_Key = "12JWP14CSW66DSLG";
 
     @PostMapping("/processStockData")
     public ResponseEntity<String> processStockData(@RequestBody StockData stockdata) throws IOException {
