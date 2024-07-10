@@ -30,7 +30,6 @@ import java.util.Date;
 @RestController
 public class StockController {
     String PRIVATE_KEY = "5Jgi3YlL3jI6A3LAENnC1qqs7ebQz4HU";
-    String AlphaVantage_Key = "12JWP14CSW66DSLG";
     StockData stockData;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
