@@ -49,6 +49,7 @@ public class StockController {
         return ResponseEntity.ok("Data processed successfully");
     }
 
+//    Add another GetMapping endpoint for this backend
     @GetMapping("/chart")
     public ResponseEntity<byte[]> getChart() throws Exception {
         XYSeries series = new XYSeries("Stock Price");
