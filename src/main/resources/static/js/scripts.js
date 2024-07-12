@@ -40,6 +40,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log("trying to change source")
                 chartImage.src = chartImageUrl;
             }
+
+            await getTableData();
+
             console.log("Function is done");
         } catch (error) {
             console.error("Error fetching or sending data");
@@ -91,6 +94,37 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Error fetching the chart", error)
         }
     };
+
+// Function to fetch data from backend and update table
+    async function getTableData() {
+        try {
+            const response = await fetch('/table');
+            if (!response.ok) {
+                throw new Error('Network response was not ok.');
+            }
+            const data = await response.json();
+
+            // Select the table body where data will be inserted
+            const tableBody = document.getElementById('tableBody');
+
+            // Clear existing rows (if any)
+            tableBody.innerHTML = '';
+
+            // Create a single row for the stock data
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${data.companyName}</td>
+            <td>${data.startDate}</td>
+            <td>${data.endDate}</td>
+            <td>${data.percentageChange}</td>
+        `;
+            tableBody.appendChild(row);
+            return tableBody;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
 
     async function getDomainFromTicker(stock_name) {
         let stockApiUrl = alphaVantageApiUrl[0] + stock_name + alphaVantageApiUrl[1];

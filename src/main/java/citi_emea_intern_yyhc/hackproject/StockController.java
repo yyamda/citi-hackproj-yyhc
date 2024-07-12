@@ -12,9 +12,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.TextAnchor;
-import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.springframework.http.MediaType;
@@ -27,15 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class StockController {
@@ -192,7 +189,26 @@ public class StockController {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(pngData);
     }
 
+    @GetMapping("/table")
+    public Map<String, String> getTable() {
+        Map<String, String> tableData = new HashMap<>();
+
+        double startPrice = objectMapper.convertValue(stockData.stockPrices[0], ObjectNode.class).get("vw").asDouble();
+        double endPrice = objectMapper.convertValue(stockData.stockPrices[stockData.stockPrices.length - 1], ObjectNode.class).get("vw").asDouble();
+        double percentChange = ((endPrice - startPrice) / startPrice) * 100;
+        DecimalFormat df = new DecimalFormat("0.00");
+        String result = df.format(percentChange) + "%";
+
+        tableData.put("companyName", stockData.stockName);
+        tableData.put("startDate", stockData.startDate);
+        tableData.put("endDate", stockData.endDate);
+        tableData.put("percentageChange", result);
+
+        return tableData;
+    }
+
 }
+
 
 class StockData {
     @JsonProperty("request_id")
