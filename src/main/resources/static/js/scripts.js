@@ -41,8 +41,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 chartImage.src = chartImageUrl;
             }
 
-            await getTableData();
-
+            let tables = await getTableData();
+            console.log("function is done 0")
             console.log("Function is done");
         } catch (error) {
             console.error("Error fetching or sending data");
@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Function to fetch data from backend and update table
     async function getTableData() {
+        console.log("i am called");
         try {
             const response = await fetch('/table');
             if (!response.ok) {
@@ -104,21 +105,26 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             const data = await response.json();
 
+            console.log("Stored data");
+            console.log(data);
             // Select the table body where data will be inserted
-            const tableBody = document.getElementById('tableBody');
+            const tableBody = document.getElementById("tableBody");
 
             // Clear existing rows (if any)
             tableBody.innerHTML = '';
 
+             for (const [companyTicker, companyObj] of Object.entries(data)) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                      <td>${companyObj.stockName}</td>
+                      <td>${companyObj.startDate}</td>
+                      <td>${companyObj.endDate}</td>
+                      <td>${companyObj.changeResult}</td>
+                `;
+                tableBody.appendChild(row);
+             }
             // Create a single row for the stock data
-            const row = document.createElement('tr');
-            row.innerHTML = `
-            <td>${data.companyName}</td>
-            <td>${data.startDate}</td>
-            <td>${data.endDate}</td>
-            <td>${data.percentageChange}</td>
-        `;
-            tableBody.appendChild(row);
+
             return tableBody;
         } catch (error) {
             console.error('Error fetching data:', error);

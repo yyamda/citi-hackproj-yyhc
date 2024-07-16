@@ -1,6 +1,11 @@
+.parent-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .title-page {
     color: gray;
-    font-size: 60px;
+    font-size: 50px;
     font-weight: bold;
 }
 
@@ -16,7 +21,6 @@
     flex-direction: column;
     gap: 10px;
     width: 300px;
-    background-color: white;
 }
 .stock-page {
     display: flex;
@@ -39,21 +43,23 @@
 }
 
 .chart-container {
-    width: 100vw;
-    height: 900px;
+    width: 80vw;
+    height: 700px;
+
 }
 
 .company-image {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
 }
 
 .image-container {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-around;
     height: 700px;
+    gap: 20px;
 
 }
 
@@ -61,33 +67,27 @@
     display: flex;
     height: 400px;
     width: 800px;
-
-
 }
 
-/* styles.css */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+.stock-analysis-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    width: 75vw;
+
+    border: 1px solid black;
 }
 
-h1 {
-    color: #333;
-    padding: 20px;
-    text-align: center;
-}
 
-#tableContainer {
-    flex: 1;
+.table-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 20px;
+    width: 80%;
+
+    border: solid blue 1px;
 }
 
 .stock-table {
@@ -113,3 +113,4 @@ h1 {
 .stock-table tr:hover {
     background-color: #f1f1f1;
 }
+

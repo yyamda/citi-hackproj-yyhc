@@ -6,10 +6,10 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Stock Viewer</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css?v=<?= time(); ?>" >
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" >
 </head>
 <body>
-    <div>
+    <div class="parent-container">
         <h1 class="title-page"> Stock Price Viewer </h1>
 
         <div class="stock-page">
@@ -24,23 +24,25 @@
             </div>
 
             <div class="chart-container">
-                <h1>Chart Example</h1>
+<!--                <h1>Chart Example</h1>-->
                 <div class="image-container">
                     <img class="company-image" src="" alt="company logo to be displayed here">
                     <img class="chart-image" src="" alt="Chart will be displayed here">
                 </div>
 
             </div>
-            <h3>Stock Data Analysis</h3>
-            <div id="tableContainer">
-                <table id="stockTable" class="stock-table">
+        </div>
+        <div class="stock-analysis-container">
+            <h2>Stock Data Analysis</h2>
+            <div class="table-container">
+                <table class="stock-table">
                     <thead>
-                    <tr>
-                        <th>Stock Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Percentage Change</th>
-                    </tr>
+                        <tr>
+                            <th>Stock Name</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Percentage Change</th>
+                        </tr>
                     </thead>
                     <tbody id="tableBody">
                     <!-- Data will be inserted here by JavaScript -->

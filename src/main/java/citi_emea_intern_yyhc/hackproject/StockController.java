@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,21 +38,18 @@ import java.util.Map;
 @RestController
 public class StockController {
     String PRIVATE_KEY = "5Jgi3YlL3jI6A3LAENnC1qqs7ebQz4HU";
-    StockData stockData;
+    ArrayList<StockData> stockDataList = new ArrayList<>();
+
+    Map<String, StockTableData> tableDataMap = new HashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @PostMapping("/processStockData")
     public ResponseEntity<String> processStockData(@RequestBody StockData stockdata) {
-        System.out.println("This is called");
 
-        this.stockData = stockdata;
+        this.stockDataList.add(stockdata);
+        this.tableDataMap.put(stockdata.stockName, new StockTableData(stockdata));
 
-        System.out.println(stockdata.stockName);
-        System.out.println(stockdata.stockPrices[0]);
-        System.out.println(stockdata.startDate);
-        System.out.println(stockdata.endDate);
-        System.out.println(stockdata.requestId);
-        System.out.println("end");
+        System.out.println("storeage complete");
 
         return ResponseEntity.ok("Data processed successfully");
     }
@@ -66,9 +64,10 @@ public class StockController {
 
         double startPrice = 0;
         double endPrice = 0;
+        StockData currStockData = this.stockDataList.get(this.stockDataList.size() - 1);
 
-        for (int i = 0; i < stockData.stockPrices.length; i++) {
-            ObjectNode node = objectMapper.convertValue(stockData.stockPrices[i], ObjectNode.class);
+        for (int i = 0; i < currStockData.stockPrices.length; i++) {
+            ObjectNode node = objectMapper.convertValue(currStockData.stockPrices[i], ObjectNode.class);
             double price = node.get("vw").asDouble();
             series.add(i, price);
             minPrice = Math.min(minPrice, price);
@@ -76,7 +75,7 @@ public class StockController {
             if (i==0){
                 startPrice = price;
             }
-            if (i==stockData.stockPrices.length-1){
+            if (i==currStockData.stockPrices.length-1){
                 endPrice = price;
             }
         }
@@ -85,7 +84,7 @@ public class StockController {
         dataset.addSeries(series);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Stock Price for " + stockData.stockName,
+                "Stock Price for " + currStockData.stockName,
                 "Date",
                 "Price",
                 dataset,
@@ -97,7 +96,7 @@ public class StockController {
 
 
         // title, background/grid line color, legend position
-        chart.setTitle(new TextTitle("Stock Price for " + stockData.stockName, new Font("Serif", Font.BOLD, 24)));
+        chart.setTitle(new TextTitle("Stock Price for " + currStockData.stockName, new Font("Serif", Font.BOLD, 24)));
         XYPlot plot = chart.getXYPlot();
         plot.setDomainGridlinePaint(Color.BLACK);
         plot.setRangeGridlinePaint(Color.BLACK);
@@ -124,12 +123,12 @@ public class StockController {
         // set custom tick labels for start and end dates
         NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
         domainAxis.setAutoTickUnitSelection(false);
-        domainAxis.setTickUnit(new NumberTickUnit(stockData.stockPrices.length - 1));
+        domainAxis.setTickUnit(new NumberTickUnit(currStockData.stockPrices.length - 1));
 
         // convert start and end dates to Date objects
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = sdf.parse(stockData.startDate);
-        Date endDate = sdf.parse(stockData.endDate);
+        Date startDate = sdf.parse(currStockData.startDate);
+        Date endDate = sdf.parse(currStockData.endDate);
 
         // format dates as strings
         String startLabel = new SimpleDateFormat("MMM dd, yyyy").format(startDate);
@@ -143,12 +142,12 @@ public class StockController {
         domainAxis.setTickLabelPaint(Color.BLACK);
         domainAxis.setTickMarkPaint(Color.BLACK);
         domainAxis.setTickUnit(new NumberTickUnit(1));
-        domainAxis.setTickUnit(new NumberTickUnit(stockData.stockPrices.length - 1));
+        domainAxis.setTickUnit(new NumberTickUnit(currStockData.stockPrices.length - 1));
 
         plot.getDomainAxis().setTickLabelsVisible(false);
 
         XYTextAnnotation startAnnotation = new XYTextAnnotation(startLabel, 0, series.getMinY());
-        XYTextAnnotation endAnnotation = new XYTextAnnotation(endLabel, stockData.stockPrices.length - 1, series.getMinY());
+        XYTextAnnotation endAnnotation = new XYTextAnnotation(endLabel, currStockData.stockPrices.length - 1, series.getMinY());
         startAnnotation.setFont(new Font("SansSerif", Font.PLAIN, 12));
         endAnnotation.setFont(new Font("SansSerif", Font.PLAIN, 12));
         startAnnotation.setTextAnchor(TextAnchor.TOP_LEFT);
@@ -161,8 +160,8 @@ public class StockController {
         rangeAxis.setRange(minPrice - 5, maxPrice + 5);
 
         // add annotations for all data points
-        for (int i = 0; i < stockData.stockPrices.length; i++) {
-            ObjectNode node = objectMapper.convertValue(stockData.stockPrices[i], ObjectNode.class);
+        for (int i = 0; i < currStockData.stockPrices.length; i++) {
+            ObjectNode node = objectMapper.convertValue(currStockData.stockPrices[i], ObjectNode.class);
             double price = node.get("vw").asDouble();
             XYTextAnnotation annotation = new XYTextAnnotation(
                     String.format("%.2f", price),
@@ -190,8 +189,23 @@ public class StockController {
     }
 
     @GetMapping("/table")
-    public Map<String, String> getTable() {
-        Map<String, String> tableData = new HashMap<>();
+    public Map<String, StockTableData> getTable() {
+        return this.tableDataMap;
+    }
+
+}
+
+class StockTableData {
+    public String stockName;
+    public String startDate;
+    public String endDate;
+    public double startPrice;
+    public double endPrice;
+    public double percentChange;
+    public String changeResult;
+
+    StockTableData(StockData stockData) {
+        final ObjectMapper objectMapper = new ObjectMapper();
 
         double startPrice = objectMapper.convertValue(stockData.stockPrices[0], ObjectNode.class).get("vw").asDouble();
         double endPrice = objectMapper.convertValue(stockData.stockPrices[stockData.stockPrices.length - 1], ObjectNode.class).get("vw").asDouble();
@@ -199,12 +213,13 @@ public class StockController {
         DecimalFormat df = new DecimalFormat("0.00");
         String result = df.format(percentChange) + "%";
 
-        tableData.put("companyName", stockData.stockName);
-        tableData.put("startDate", stockData.startDate);
-        tableData.put("endDate", stockData.endDate);
-        tableData.put("percentageChange", result);
-
-        return tableData;
+        this.stockName = stockData.stockName;
+        this.startDate = stockData.startDate;
+        this.endDate = stockData.endDate;
+        this.startPrice = startPrice;
+        this.endPrice = endPrice;
+        this.percentChange = percentChange;
+        this.changeResult = result;
     }
 
 }
